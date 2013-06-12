@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  id: 
+  hash: MyString
+  access_token: MyString
+  refresh_token: MyString
+  last_refresh: 
+  email: MyText
+
+two:
+  id: 
+  hash: MyString
+  access_token: MyString
+  refresh_token: MyString
+  last_refresh: 
+  email: MyText
