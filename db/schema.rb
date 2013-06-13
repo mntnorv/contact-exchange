@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130612485110) do
+ActiveRecord::Schema.define(:version => 20130613181900) do
 
   create_table "users", :force => true do |t|
     t.string   "user_hash"
@@ -22,5 +22,7 @@ ActiveRecord::Schema.define(:version => 20130612485110) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  add_index "users", ["user_hash"], :name => "index_users_on_user_hash", :unique => true
 
 end

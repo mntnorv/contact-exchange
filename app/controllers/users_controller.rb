@@ -1,31 +1,39 @@
+require 'signet/oauth_2/client'
+
 class UsersController < ApplicationController
   # GET /users/1
   def show
     @user = User.find_by_user_hash(params[:hash])
-    if (@user == nil)
+    if @user == nil
       raise ActiveRecord::RecordNotFound, "No user with hash %{hash}" % { :hash => params[:hash] }
     end
   end
 
-  # GET /users/new
-  # GET /users/new.json
+  # GET /users/register
   def register
-    @user = User.new
+    client = new_auth_client
 
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @user }
-    end
-  end
-
-  # POST /users
-  def create
-    @user = User.new(params[:user])
-
-    if @user.save
-      redirect_to @user, notice: 'User was successfully created.'
+    if params[:code] == nil
+      redirect_uri = client.authorization_uri
+      redirect_to redirect_uri.to_s
     else
-      render action: "new"
+      @user = User.new
+
+      client.code = params[:code]
+      client.fetch_access_token!
+
+      @user.update_user_info! client
+
+      begin
+        if @user.save
+          redirect_to user_url(@user.user_hash), notice: 'User was successfully created.'
+        else
+          # Error: failed saving user
+          render json: @user, status: :unprocessable_entity
+        end
+      rescue ActiveRecord::RecordNotUnique
+        redirect_to user_url(@user.user_hash), notice: 'You were already registered.'
+      end
     end
   end
 
@@ -55,5 +63,18 @@ class UsersController < ApplicationController
       format.html { redirect_to users_url }
       format.json { head :no_content }
     end
+  end
+
+  # Get default google client
+  private
+  def new_auth_client
+    client = Signet::OAuth2::Client.new(
+      :authorization_uri    => Yetting.google_auth_uri,
+      :token_credential_uri => Yetting.google_token_uri,
+      :client_id            => Yetting.google_client_id,
+      :client_secret        => Yetting.google_client_secret,
+      :redirect_uri         => Yetting.google_callback,
+      :scope                => Yetting.google_api_scopes
+    )
   end
 end
