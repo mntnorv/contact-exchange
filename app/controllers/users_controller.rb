@@ -11,18 +11,14 @@ class UsersController < ApplicationController
 
   # GET /users/register
   def register
-    client = new_auth_client
+    @user = User.new
 
     if params[:code] == nil
-      redirect_uri = client.authorization_uri
+      redirect_uri = @user.oauth_client.authorization_uri
       redirect_to redirect_uri.to_s
     else
-      @user = User.new
-
-      client.code = params[:code]
-      client.fetch_access_token!
-
-      @user.update_user_info! client
+      @user.fetch_new_tokens! params[:code]
+      @user.update_user_info!
 
       begin
         if @user.save
@@ -37,44 +33,36 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/1
-  # PUT /users/1.json
-  def update
-    @user = User.find(params[:hash])
+  # POST /users/1/add_contact
+  def add_contact
+    @user = User.find_by_user_hash(params[:hash])
+    if @user == nil
+      raise ActiveRecord::RecordNotFound, "No user with hash %{hash}" % { :hash => params[:hash] }
+    end
 
-    respond_to do |format|
-      if @user.update_attributes(params[:user])
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    response = @user.add_contact(
+      :first_name => params[:first_name],
+      :last_name => params[:last_name],
+      :phone => params[:phone]
+    )
+
+    if response.status == 201
+      redirect_to user_url(@user.user_hash), notice: "Contact was successfully added."
+    else
+      # Error, didn't add contact
+      redirect_to user_url(@user.user_hash)
     end
   end
 
   # DELETE /users/1
-  # DELETE /users/1.json
   def destroy
-    @user = User.find(params[:hash])
+    @user = User.find_by_user_hash(params[:hash])
+    if @user == nil
+      raise ActiveRecord::RecordNotFound, "No user with hash %{hash}" % { :hash => params[:hash] }
+    end
+
     @user.destroy
 
-    respond_to do |format|
-      format.html { redirect_to users_url }
-      format.json { head :no_content }
-    end
-  end
-
-  # Get default google client
-  private
-  def new_auth_client
-    client = Signet::OAuth2::Client.new(
-      :authorization_uri    => Yetting.google_auth_uri,
-      :token_credential_uri => Yetting.google_token_uri,
-      :client_id            => Yetting.google_client_id,
-      :client_secret        => Yetting.google_client_secret,
-      :redirect_uri         => Yetting.google_callback,
-      :scope                => Yetting.google_api_scopes
-    )
+    redirect_to users_url
   end
 end
