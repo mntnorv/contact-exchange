@@ -17,3 +17,4 @@ test:
 
 production:
   <<: *defaults
+  google_callback: http://contact-exchange.herokuapp.com/register
