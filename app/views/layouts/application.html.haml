@@ -11,8 +11,11 @@
     = csrf_meta_tags
     = yield(:head)
   %body
-    = render 'layouts/navigation'
     .container-narrow
+      = render 'layouts/navigation'
       .row-fluid
         .span12= render 'layouts/messages'
+      .row-fluid
         .span12= yield
+      %hr
+      .muted &copy; Mantas Norvaiša 2013
