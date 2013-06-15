@@ -73,8 +73,8 @@ class User < ActiveRecord::Base
   ##
   # Fetches new access_token using the saved refresh_token
   def refresh_tokens!
-    @oauth_client.refresh!
-    self.access_token = @oauth_client.refresh_token
+    @oauth_client.fetch_access_token!
+    self.access_token = @oauth_client.access_token
     self.last_refresh = @oauth_client.issued_at
     self.save
   end
