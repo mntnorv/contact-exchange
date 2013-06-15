@@ -1,18 +1,7 @@
 = form_tag(add_contact_url(@user.user_hash), :method => "post") do
-  .field
-    = label_tag(:first_name, "First name:")
-    %br
-    = text_field_tag(:first_name)
+  .fieldset
+    = text_field_tag :first_name, nil, :placeholder => 'First name', :class => 'input-block-level'
+    = text_field_tag :last_name, nil, :placeholder => 'Last name', :class => 'input-block-level'
+    = text_field_tag :phone, nil, :placeholder => 'Phone number', :class => 'input-block-level'
 
-  .field
-    = label_tag(:last_name, "Last name:")
-    %br
-    = text_field_tag(:last_name)
-
-  .field
-    = label_tag(:phone, "Phone number:")
-    %br
-    = text_field_tag(:phone)
-
-  .actions
-    = submit_tag("Submit")
+    = submit_tag "Add contact", :class => "btn btn-primary btn-large btn-block"

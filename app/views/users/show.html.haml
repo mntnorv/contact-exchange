@@ -1,2 +1,4 @@
-%h1= @user.name
-= render 'contact_form'
+.form-signin
+  %h2.form-signin-heading= @user.name
+  %hr
+  = render 'contact_form'
