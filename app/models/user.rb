@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   NEW_CONTACT_FORMAT = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005'><atom:category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><gd:name><gd:givenName>%{first_name}</gd:givenName><gd:familyName>%{last_name}</gd:familyName></gd:name><gd:phoneNumber rel='http://schemas.google.com/g/2005#mobile' primary='true'>%{phone}</gd:phoneNumber><gContact:groupMembershipInfo deleted='false' href='http://www.google.com/m8/feeds/groups/%{user_email}/base/6'/></atom:entry>"
 
   # ActiveRecord fields
-  attr_accessible :access_token, :email, :last_refresh, :name, :refresh_token, :user_hash
+  attr_accessible :access_token, :email, :expiry, :last_refresh, :name, :refresh_token, :user_hash
   
   # The user's OAuth client
   attr_accessor :oauth_client
@@ -14,29 +14,15 @@ class User < ActiveRecord::Base
   # ActiveRecord data validations
   validates :access_token,  :presence => true
   validates :email,         :presence => true
+  validates :expiry,        :presence => true
+  validates :last_refresh,  :presence => true
+  validates :name,          :presence => true
+  validates :refresh_token, :presence => true
   validates :user_hash,     :presence => true,
                             :length => { :is => 32 }
-  validates :last_refresh,  :presence => true
-  validates :refresh_token, :presence => true
 
   # Initialize the OAuth client after ActiveRecord initialization
   after_initialize :init_oauth_client
-
-  #
-  # Getters
-  #
-
-  def access_token
-    @oauth_client.access_token
-  end
-
-  def refresh_token
-    @oauth_client.refresh_token
-  end
-
-  def last_refresh
-    @oauth_client.issued_at
-  end
 
   #
   # Setters
@@ -68,6 +54,7 @@ class User < ActiveRecord::Base
     self.access_token = @oauth_client.access_token
     self.refresh_token = @oauth_client.refresh_token
     self.last_refresh = @oauth_client.issued_at
+    self.expiry = @oauth_client.expiry
   end
 
   ##
@@ -76,6 +63,7 @@ class User < ActiveRecord::Base
     @oauth_client.fetch_access_token!
     self.access_token = @oauth_client.access_token
     self.last_refresh = @oauth_client.issued_at
+    self.expiry = @oauth_client.expiry
     self.save
   end
 
@@ -132,7 +120,7 @@ class User < ActiveRecord::Base
   ##
   # Checks if the access token needs an update
   def needs_refresh?
-    last_refresh + 3600 <= Time.now.to_i
+    last_refresh + expiry <= Time.now.to_i
   end
 
   ##
