@@ -1,6 +1,9 @@
 require 'signet/oauth_2/client'
 
 class UsersController < ApplicationController
+
+  layout 'layouts/simple_form'
+
   # GET /users/1
   def show
     @user = User.find_by_user_hash(params[:hash])
@@ -49,8 +52,7 @@ class UsersController < ApplicationController
     if response.status == 201
       redirect_to user_url(@user.user_hash), notice: "Contact was successfully added."
     else
-      # Error, didn't add contact
-      redirect_to user_url(@user.user_hash)
+      redirect_to user_url(@user.user_hash), alert: "Error: adding the contact failed."
     end
   end
 
