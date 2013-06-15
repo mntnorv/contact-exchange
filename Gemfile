@@ -16,6 +16,9 @@ gem 'yettings'
 # HAML for rails
 gem 'haml-rails'
 
+# Twitter Bootstrap in SASS
+gem 'bootstrap-sass', '~> 2.3.2.0'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

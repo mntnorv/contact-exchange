@@ -75,6 +75,8 @@ class User < ActiveRecord::Base
   def refresh_tokens!
     @oauth_client.refresh!
     self.access_token = @oauth_client.refresh_token
+    self.last_refresh = @oauth_client.issued_at
+    self.save
   end
 
   ##
@@ -105,6 +107,10 @@ class User < ActiveRecord::Base
   #   - :last_name - Last name (required)
   #   - :phone - Phone number (required)
   def add_contact(contact_info)
+    if self.needs_refresh?
+      self.refresh_tokens!
+    end
+
     request_body = NEW_CONTACT_FORMAT % {
       :first_name => contact_info[:first_name],
       :last_name => contact_info[:last_name],
@@ -125,9 +131,8 @@ class User < ActiveRecord::Base
 
   ##
   # Checks if the access token needs an update
-  private
-  def needs_update?
-    last_refresh + 3600 <= Time.now.getutc
+  def needs_refresh?
+    last_refresh + 3600 <= Time.now.to_i
   end
 
   ##
