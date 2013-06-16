@@ -12,6 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require parsley
 //= require bootstrap
-//= require parsley.js
 //= require_tree .
