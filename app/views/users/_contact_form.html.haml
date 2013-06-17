@@ -1,4 +1,4 @@
-= form_tag(add_contact_url(@user.user_hash), :method => 'post', 'data-validate' => 'parsley') do
+= form_tag(add_contact_url(@user.user_token), :method => 'post', 'data-validate' => 'parsley') do
   .errors
   .fieldset
     = text_field_tag :first_name, nil, :placeholder => 'First name', :class => 'input-block-level field', 'data-required' => 'true', 'data-minlength' => '2'

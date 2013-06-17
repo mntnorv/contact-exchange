@@ -1,28 +1,29 @@
-require 'digest/md5'
 require 'json'
 
 class User < ActiveRecord::Base
 
   NEW_CONTACT_FORMAT = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005'><atom:category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><gd:name><gd:givenName>%{first_name}</gd:givenName><gd:familyName>%{last_name}</gd:familyName></gd:name><gd:phoneNumber rel='http://schemas.google.com/g/2005#mobile' primary='true'>%{phone}</gd:phoneNumber><gContact:groupMembershipInfo deleted='false' href='http://www.google.com/m8/feeds/groups/%{user_email}/base/6'/></atom:entry>"
 
+  # Initialize the OAuth client after ActiveRecord initialization
+  after_initialize :init_oauth_client
+
+  # Generate a unique token for each user
+  before_create :generate_token
+
   # ActiveRecord fields
-  attr_accessible :access_token, :email, :expiry, :last_refresh, :name, :refresh_token, :user_hash
+  attr_accessible :access_token, :email, :expires_in, :last_refresh, :name, :refresh_token, :user_token
   
   # The user's OAuth client
   attr_accessor :oauth_client
 
   # ActiveRecord data validations
   validates :access_token,  :presence => true
-  validates :email,         :presence => true
-  validates :expiry,        :presence => true
+  validates :email,         :presence => true,
+                            :uniqueness => true
+  validates :expires_in,    :presence => true
   validates :last_refresh,  :presence => true
   validates :name,          :presence => true
   validates :refresh_token, :presence => true
-  validates :user_hash,     :presence => true,
-                            :length => { :is => 32 }
-
-  # Initialize the OAuth client after ActiveRecord initialization
-  after_initialize :init_oauth_client
 
   #
   # Setters
@@ -51,20 +52,20 @@ class User < ActiveRecord::Base
   def fetch_new_tokens!(code)
     @oauth_client.code = code
     @oauth_client.fetch_access_token!
-    self.access_token = @oauth_client.access_token
-    self.refresh_token = @oauth_client.refresh_token
-    self.last_refresh = @oauth_client.issued_at
-    self.expiry = @oauth_client.expiry
+    write_attribute :access_token, @oauth_client.access_token
+    write_attribute :refresh_token, @oauth_client.refresh_token
+    write_attribute :last_refresh, @oauth_client.issued_at
+    write_attribute :expires_in, @oauth_client.expires_in
   end
 
   ##
   # Fetches new access_token using the saved refresh_token
   def refresh_tokens!
     @oauth_client.fetch_access_token!
-    self.access_token = @oauth_client.access_token
-    self.last_refresh = @oauth_client.issued_at
-    self.expiry = @oauth_client.expiry
-    self.save
+    write_attribute :access_token, @oauth_client.access_token
+    write_attribute :last_refresh, @oauth_client.issued_at
+    write_attribute :expires_in, @oauth_client.expires_in
+    self.save!
   end
 
   ##
@@ -75,15 +76,9 @@ class User < ActiveRecord::Base
     )
 
     user_data = JSON.parse response.body
-    hash_data = "%{google_id};%{name};%{email}" % {
-      :google_id => user_data['id'],
-      :name => user_data['name'],
-      :email => user_data['email']
-    }
 
-    self.email = user_data['email']
-    self.name = user_data['name']
-    self.user_hash = Digest::MD5.hexdigest(hash_data)
+    write_attribute :email, user_data['email']
+    write_attribute :name, user_data['name']
   end
 
   ##
@@ -103,7 +98,7 @@ class User < ActiveRecord::Base
       :first_name => contact_info[:first_name],
       :last_name => contact_info[:last_name],
       :phone => contact_info[:phone],
-      :user_email => self.email
+      :user_email => email
     }
 
     response = @oauth_client.fetch_protected_resource(
@@ -120,7 +115,18 @@ class User < ActiveRecord::Base
   ##
   # Checks if the access token needs an update
   def needs_refresh?
-    last_refresh + expiry <= Time.now.to_i
+    @oauth_client.expired?
+  end
+
+  ##
+  # Generate a unique user token
+  protected
+  def generate_token
+    new_user_token = loop do
+      random_token = SecureRandom.urlsafe_base64(24)
+      break random_token unless User.where(user_token: random_token).exists?
+    end
+    write_attribute :user_token, new_user_token
   end
 
   ##
@@ -129,9 +135,17 @@ class User < ActiveRecord::Base
   def init_oauth_client
     @oauth_client = new_auth_client
 
-    @oauth_client.access_token = read_attribute(:access_token)
-    @oauth_client.refresh_token = read_attribute(:refresh_token)
-    @oauth_client.issued_at = read_attribute(:last_refresh)
+    if read_attribute(:access_token)
+      @oauth_client.access_token = read_attribute(:access_token)
+    end
+
+    if read_attribute(:refresh_token)
+      @oauth_client.refresh_token = read_attribute(:refresh_token)
+    end
+
+    if read_attribute(:last_refresh)
+      @oauth_client.issued_at = read_attribute(:last_refresh)
+    end
   end
 
   ##

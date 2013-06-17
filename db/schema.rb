@@ -11,20 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130615142500) do
+ActiveRecord::Schema.define(:version => 20130617164300) do
 
   create_table "users", :force => true do |t|
     t.text     "email"
     t.string   "name"
-    t.string   "user_hash"
+    t.string   "user_token"
     t.string   "access_token"
     t.string   "refresh_token"
     t.integer  "last_refresh"
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
-    t.integer  "expiry",        :default => 0
+    t.integer  "expires_in",    :default => 0
   end
 
-  add_index "users", ["user_hash"], :name => "index_users_on_user_hash", :unique => true
+  add_index "users", ["user_token"], :name => "index_users_on_user_hash", :unique => true
 
 end

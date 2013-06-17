@@ -5,9 +5,9 @@ defaults: &defaults
   google_client_secret: AUNvj4uM6HiUm8x2BgVuGWXT
   google_callback: http://localhost/oauth2callback
   google_api_scopes:
-    - http://www.google.com/m8/feeds/
     - https://www.googleapis.com/auth/userinfo.profile
     - https://www.googleapis.com/auth/userinfo.email
+    - http://www.google.com/m8/feeds/
 
 development:
   <<: *defaults
