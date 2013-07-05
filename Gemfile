@@ -7,9 +7,6 @@ gem 'rails', '4.0.0'
 
 gem 'pg'
 
-# For Google OAuth2 authorization
-gem 'signet'
-
 # YAML settings
 gem 'yettings'
 
@@ -21,6 +18,12 @@ gem 'bootstrap-sass', '~> 2.3.2.0'
 
 # Javascript form validation
 gem 'parsley-rails'
+
+# User management
+gem 'devise', '~> 3.0.0.rc'
+
+# Authentication with Devise
+gem 'omniauth-google-oauth2'
 
 # Gems used only for assets and not required
 # in production environments by default.
