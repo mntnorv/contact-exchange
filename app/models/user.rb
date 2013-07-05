@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   before_create :generate_token
 
   # ActiveRecord fields
-  attr_accessible :access_token, :email, :expires_in, :last_refresh, :name, :refresh_token, :user_token
+  # attr_accessible :access_token, :email, :expires_in, :last_refresh, :name, :refresh_token, :user_token
   
   # The user's OAuth client
   attr_accessor :oauth_client
@@ -90,9 +90,8 @@ class User < ActiveRecord::Base
   #   - :last_name - Last name (required)
   #   - :phone - Phone number (required)
   def add_contact(contact_info)
-    if self.needs_refresh?
-      self.refresh_tokens!
-    end
+    # refresh only when needed
+    self.refresh_tokens!
 
     request_body = NEW_CONTACT_FORMAT % {
       :first_name => contact_info[:first_name],
