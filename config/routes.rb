@@ -1,7 +1,9 @@
 Contacts::Application.routes.draw do
   root :to => 'home#index'
 
+  # Account management
   devise_for :users, controllers: { omniauth_callbacks: "omniauth_callbacks" }
+  get "account" => "account#index", :as => :account
 
   # Users
   #get    "users/register"           => "users#register",    :as => :new_user_register

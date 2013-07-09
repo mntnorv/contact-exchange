@@ -2,10 +2,13 @@ class DeviseCreateUsers < ActiveRecord::Migration
   def change
     create_table(:users) do |t|
       ## User info
-      t.string :user_id, :null => false
-      t.string :provider, :null => false
       t.string :name, :null => false
       t.string :long_token
+
+      ## Google OAuth info
+      t.string :access_token
+      t.string :refresh_token
+      t.integer :access_token_expires_at
 
       ## Database authenticatable
       t.string :email,              :null => false, :default => ""
@@ -38,7 +41,6 @@ class DeviseCreateUsers < ActiveRecord::Migration
 
       ## Token authenticatable
       # t.string :authentication_token
-
 
       t.timestamps
     end

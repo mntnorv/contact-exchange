@@ -19,15 +19,20 @@ class User < ActiveRecord::Base
         user.email = auth.info.email
       end
     end#/
-    user = User.find_by_email(auth.info.email)
-
-    unless user
+    if user = User.find_by_email(auth.info.email)
+      user.access_token = auth.credentials.token
+      user.access_token_expires_at = auth.credentials.expires_at
+      #user.refresh_token = auth.credentials.refresh_token
+      user.save
+    else
       user = User.create(
-        user_id: auth.uid,
-        provider: auth.provider,
         name: auth.info.name,
         email: auth.info.email,
-        password: "abcdefgh"
+        password: Devise.friendly_token[0,20],
+        access_token: auth.credentials.token,
+        access_token_expires_at: auth.credentials.expires_at,
+        refresh_token: auth.credentials.refresh_token,
+        long_token: Devise.friendly_token[0,24]
       )
     end
 
