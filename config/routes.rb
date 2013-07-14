@@ -3,7 +3,8 @@ Contacts::Application.routes.draw do
 
   # Account management
   devise_for :users, controllers: { omniauth_callbacks: "omniauth_callbacks" }
-  get "account" => "account#index", :as => :account
+  get "account"               => "account#index",   :as => :account
+  get "account/refresh_token" => "account#refresh", :as => :account_refresh_token
 
   # Users
   #get    "users/register"           => "users#register",    :as => :new_user_register
