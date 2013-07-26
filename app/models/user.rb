@@ -67,6 +67,21 @@ class User < ActiveRecord::Base
     response.status
   end
 
+  ##
+  # Enables sign up without a password
+  def password_required?
+    false
+  end
+
+  ##
+  # Check if password and its confirmation match and are not blank
+  def password_match?
+    self.errors[:password] << "can't be blank" if password.blank?
+    self.errors[:password_confirmation] << "can't be blank" if password_confirmation.blank?
+    self.errors[:password_confirmation] << "does not match password" if password != password_confirmation
+    password == password_confirmation && !password.blank?
+  end
+
   ##################################################
   # Private instance methods
   ##################################################
@@ -106,7 +121,6 @@ class User < ActiveRecord::Base
       user = User.create(
         name: auth.info.name,
         email: auth.info.email,
-        password: Devise.friendly_token[0,20],
         access_token: auth.credentials.token,
         access_token_expires_at: auth.credentials.expires_at,
         refresh_token: auth.credentials.refresh_token,

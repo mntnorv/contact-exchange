@@ -1,0 +1,10 @@
+%h2 Finish sign up
+
+= form_for(resource, :as => resource_name, :url => user_finish_registration_path) do |f|
+  = devise_error_messages!
+
+  .fieldset
+    = f.password_field :password, :placeholder => 'Password', :class => 'field', :autofocus => true
+    = f.password_field :password_confirmation, :placeholder => 'Confirm password', :class => 'field'
+
+  = f.submit "Sign up", :class => "btn btn-primary"
