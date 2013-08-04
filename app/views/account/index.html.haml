@@ -1,2 +1,6 @@
-= current_user.to_json
-= user_session.to_json
+%legend Your profile link
+.btn-group
+  = link_to user_page_url(current_user.long_token), user_page_url(current_user.long_token), :class => "btn"
+  %button.btn Copy
+/= current_user.to_json
+/= user_session.to_json
