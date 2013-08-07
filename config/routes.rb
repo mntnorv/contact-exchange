@@ -2,7 +2,7 @@ Contacts::Application.routes.draw do
   root :to => 'home#index'
 
   # Account management
-  devise_for :users, controllers: { omniauth_callbacks: "omniauth_callbacks" }
+  devise_for :users, controllers: { registrations: "registrations", omniauth_callbacks: "omniauth_callbacks" }
   get "account"               => "account#index",   :as => :account
   get "account/refresh_token" => "account#refresh", :as => :account_refresh_token
 
