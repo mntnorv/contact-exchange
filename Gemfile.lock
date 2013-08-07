@@ -140,6 +140,8 @@ GEM
     warden (1.2.3)
       rack (>= 1.0)
     yettings (0.1.1)
+    zeroclipboard-rails (0.0.4)
+      railties (>= 3.1)
 
 PLATFORMS
   ruby
@@ -158,3 +160,4 @@ DEPENDENCIES
   therubyracer
   uglifier (>= 2.1.1)
   yettings
+  zeroclipboard-rails

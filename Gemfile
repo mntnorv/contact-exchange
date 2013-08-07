@@ -25,6 +25,9 @@ gem 'devise', '~> 3.0.0.rc'
 # Authentication with Devise
 gem 'omniauth-google-oauth2'
 
+# Copy to clipboard support
+gem 'zeroclipboard-rails'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

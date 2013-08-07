@@ -1,12 +1,13 @@
 .hrheader Your profile link
 .btn-group
-  = link_to user_page_url(current_user.long_token), user_page_url(current_user.long_token), :class => "btn"
-  %button.btn.btn-primary Copy
+  = link_to user_page_url(current_user.long_token), user_page_url(current_user.long_token), :id => "profile_link", :class => "btn", :target => "_blank"
+  %button.btn.btn-primary#copy_button{"data-clipboard-target" => "profile_link"} Copy
 
 - if current_user.encrypted_password == ""
   .hrheader Create a password
 - else
   .hrheader Change your password
+
 = form_for(current_user, :url => registration_path(:user), :html => { :method => :put }) do |f|
   .fieldset
     - if current_user.encrypted_password != ""
@@ -17,3 +18,8 @@
 
 /= current_user.to_json
 /= user_session.to_json
+
+:javascript
+  $(document).ready(function() {
+    var clip = new ZeroClipboard($("#copy_button"))
+  });
