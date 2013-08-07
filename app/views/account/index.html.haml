@@ -1,11 +1,12 @@
-%legend Your profile link
+.hrheader Your profile link
 .btn-group
   = link_to user_page_url(current_user.long_token), user_page_url(current_user.long_token), :class => "btn"
   %button.btn.btn-primary Copy
+
 - if current_user.encrypted_password == ""
-  %legend Create a password
+  .hrheader Create a password
 - else
-  %legend Change your password
+  .hrheader Change your password
 = form_for(current_user, :url => registration_path(:user), :html => { :method => :put }) do |f|
   .fieldset
     - if current_user.encrypted_password != ""
@@ -13,5 +14,6 @@
     %div= f.password_field :password, :placeholder => 'New password', :autocomplete => "off"
     %div= f.password_field :password_confirmation, :placeholder => 'Confirm password'
   %div= f.submit "Update", :class => "btn btn-primary"
+
 /= current_user.to_json
 /= user_session.to_json

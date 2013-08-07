@@ -1,12 +1,12 @@
-%h2 Sign in
+.hrheader Sign in
 
 = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
   .fieldset
-    = f.email_field :email, :placeholder => 'Email', :class => 'field', :autofocus => true
-    = f.password_field :password, :placeholder => 'Password', :class => 'field'
-    %label.checkbox
-      = f.check_box :remember_me
-      Remember me
+    %div= f.email_field :email, :placeholder => 'Email', :class => 'field input-block-level', :autofocus => true
+    %div= f.password_field :password, :placeholder => 'Password', :class => 'field input-block-level'
+    = f.check_box :remember_me
+    = f.label :remember_me, :class => "checkbox inline", :style => "padding-left: 0px;"
   = f.submit "Sign in", :class => "btn btn-primary"
+  = link_to "Sign in with Google", omniauth_authorize_path(:user, :google_oauth2), :class => "btn"
 
 = render "devise/shared/links"

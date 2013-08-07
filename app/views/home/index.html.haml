@@ -1,7 +1,10 @@
 .jumbotron
   %h1 Contact exchange
   %p.lead Give a URL, get a contact. It's that simple.
-  = link_to "Register now", new_user_registration_path, :class => "btn btn-large btn-success"
+  - if !current_user
+    = link_to "Sign up with Google", omniauth_authorize_path(:user, :google_oauth2), :class => "btn btn-large btn-success"
+  - else
+    = link_to "Go to your profile", account_path, :class => "btn btn-large btn-info"
 
 %hr
 
@@ -10,7 +13,7 @@
     %h4 Simple
     %p Register, get a URL, give it to anyone who's contact you want. When they fill up the form, the new contact is instantly synced to your mobile device.
   .span4
-    %h4 Seamless sync
+    %h4 Seamless
     %p Seamlessly and instantly syncs contacts with all major mobile operating systems: <strong>iOS</strong>, <strong>Android</strong> and <strong>Windows Phone</strong>.
   .span4
     %h4 Secure
