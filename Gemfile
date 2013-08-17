@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+# Use Ruby 2.0 with Rails 4.0
+ruby '2.0.0'
 gem 'rails', '4.0.0'
 
 # Bundle edge Rails instead:
@@ -20,7 +22,7 @@ gem 'bootstrap-sass', '~> 2.3.2.0'
 gem 'parsley-rails'
 
 # User management
-gem 'devise', '~> 3.0.0.rc'
+gem 'devise', '~> 3.0.2'
 
 # Authentication with Devise
 gem 'omniauth-google-oauth2'
