@@ -16,3 +16,9 @@
 //= require bootstrap
 //= require zeroclipboard
 //= require_tree .
+
+function select(what) {
+	what.focus();
+	what.selectionStart=0;
+	what.selectionEnd=this.value.length;
+}

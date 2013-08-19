@@ -1,7 +1,7 @@
 .hrheader Your profile link
-.btn-group
-  = link_to user_page_url(current_user.long_token), user_page_url(current_user.long_token), :id => "profile_link", :class => "btn", :target => "_blank"
-  %button.btn.btn-primary#copy_button{"data-clipboard-target" => "profile_link"} Copy
+.input-append
+  %input{:onclick => "select(this);", :value => user_page_url(current_user.long_token), :type => "text", :readonly => "readonly"}
+  = link_to "Go!", user_page_url(current_user.long_token), :class => "btn btn-primary", :target => "_blank"
 
 - if current_user.encrypted_password == ""
   .hrheader Create a password
@@ -18,8 +18,3 @@
 
 /= current_user.to_json
 /= user_session.to_json
-
-:javascript
-  $(document).ready(function() {
-    var clip = new ZeroClipboard($("#copy_button"), { allowScriptAccess: "always" })
-  });

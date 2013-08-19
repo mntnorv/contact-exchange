@@ -1,3 +1,7 @@
 @import "bootstrap";
 body { padding-top: 30px; }
 @import "bootstrap-responsive";
+
+input[readonly] {
+	cursor: text;
+}
