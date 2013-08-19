@@ -14,7 +14,6 @@
 //= require jquery_ujs
 //= require parsley
 //= require bootstrap
-//= require zeroclipboard
 //= require_tree .
 
 function select(what) {
