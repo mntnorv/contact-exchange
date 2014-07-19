@@ -4,13 +4,13 @@
   %span.input-group-btn
     = link_to 'Go!', user_page_url(current_user.long_token), class: 'btn btn-primary', target: '_blank'
 
-- if current_user.encrypted_password.empty?
+- if current_user.encrypted_password.blank?
   .hrheader Create a password
 - else
   .hrheader Change your password
 
 = form_for(current_user, :url => registration_path(:user), method: :put, remote: true) do |f|
-  - unless current_user.encrypted_password.empty?
+  - unless current_user.encrypted_password.blank?
     .form-group
       %div= f.password_field :current_password, placeholder: 'Old password', class: 'form-control'
 

@@ -1,7 +1,7 @@
 $error-color: #F2DEDE;
 $success-color: #DFF0D8;
 
-input.parsley-success, textarea.parsley-success {
+input.validation-success, textarea.validation-success {
   color: darken($success-color, 40%);
   background-color: $success-color;
   border: 1px solid darken($success-color, 5%);
@@ -15,7 +15,7 @@ input.parsley-success, textarea.parsley-success {
   @include placeholder(darken($success-color, 30%));
 }
 
-input.parsley-error, textarea.parsley-error {
+input.validation-error, textarea.validation-error {
   color: darken($error-color, 40%);
   background-color: $error-color;
   border: 1px solid darken($error-color, 5%);
@@ -31,7 +31,7 @@ input.parsley-error, textarea.parsley-error {
   @include placeholder(darken($error-color, 30%));
 }
 
-ul.parsley-errors-list {
+ul.validation-error-list {
   font-size: 12px;
   color: darken($error-color, 40%);
   padding-left: 10px;

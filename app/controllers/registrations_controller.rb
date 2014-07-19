@@ -24,7 +24,7 @@ class RegistrationsController < Devise::RegistrationsController
   # Check if the user needs a password for the changes
   # in params
   def needs_password?(user, params)
-    !user.encrypted_password.empty?
+    !user.encrypted_password.blank?
   end
 
   ##

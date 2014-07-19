@@ -21,6 +21,11 @@
 #= require forms
 #
 
+window.ParsleyConfig =
+  errorClass: 'validation-error'
+  successClass: 'validation-success'
+  errorsWrapper: '<ul class="validation-error-list"></ul>'
+
 $.fn.selectOnFocus = ->
   @.focus ->
     @[0].selectionStart = 0

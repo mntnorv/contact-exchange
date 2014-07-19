@@ -1,16 +1,17 @@
 $ ->
   handleFormErrors = (form, errors) ->
-    form.find('input').removeClass('parsley-error parsley-success')
+    form.find('input').removeClass('validation-error validation-success')
 
     $.each errors, (name, messages) ->
       input = form.find("input[name*='#{name}']")
-      input.addClass('parsley-error')
+      input.addClass('validation-error')
 
   remoteForms = $('form[data-remote]')
 
   remoteForms.on 'ajax:success', (evt, data) ->
     form = $(@)
     inputs = form.find('input[type="text"],input[type="password"]')
+    handleFormErrors(form, {})
 
     inputs.val('')
     inputs.blur()

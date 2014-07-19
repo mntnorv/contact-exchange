@@ -1,9 +1,10 @@
 require 'oauth2'
+require 'haml'
 
 class User < ActiveRecord::Base
 
   # The format string of a new Google contact entry
-  NEW_CONTACT_FORMAT = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005'><atom:category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><gd:name><gd:givenName>%{first_name}</gd:givenName><gd:familyName>%{last_name}</gd:familyName></gd:name><gd:phoneNumber rel='http://schemas.google.com/g/2005#mobile' primary='true'>%{phone}</gd:phoneNumber><gContact:groupMembershipInfo deleted='false' href='http://www.google.com/m8/feeds/groups/%{user_email}/base/6'/></atom:entry>"
+  TEMPLATES_DIR = File.join(Rails.root, 'config', 'templates')
 
   # Initialize the OAuth client after ActiveRecord initialization
   after_initialize :init_oauth_access_token
@@ -18,7 +19,8 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
 
   # The user's OAuth client
-  attr_accessor :oauth_access_token
+  attr_reader :oauth_access_token
+  attr_reader :response
 
   ##################################################
   # Instance methods
@@ -48,25 +50,32 @@ class User < ActiveRecord::Base
   def add_contact(contact_info)
     self.refresh_access_token!
 
-    request_body = NEW_CONTACT_FORMAT % {
-      :first_name => contact_info[:first_name],
-      :last_name => contact_info[:last_name],
-      :phone => contact_info[:phone],
-      :user_email => email
-    }
+    contact = OpenStruct.new({
+      first_name: contact_info[:first_name],
+      last_name: contact_info[:last_name],
+      phone: contact_info[:phone]
+    })
 
-    response = @oauth_access_token.post(
-      "https://www.google.com/m8/feeds/contacts/default/full",
+    haml_template = File.read(File.join(TEMPLATES_DIR, 'contact.xml.haml'))
+    request_body = Haml::Engine.new(haml_template).render(Object.new, {
+      contact: contact,
+      user: self
+    })
+
+    p request_body
+
+    @response = @oauth_access_token.post(
+      'https://www.google.com/m8/feeds/contacts/default/full',
       {
-        :body => request_body,
-        :headers => {
+        body: request_body,
+        headers: {
           'Content-type' => 'application/atom+xml',
           'GData-Version' => '3.0'
         }
       }
     )
 
-    response.status
+    @response.status == 201
   end
 
   ##
@@ -75,33 +84,24 @@ class User < ActiveRecord::Base
     false
   end
 
-  ##
-  # Check if password and its confirmation match and are not blank
-  def password_match?
-    self.errors[:password] << "can't be blank" if password.blank?
-    self.errors[:password_confirmation] << "can't be blank" if password_confirmation.blank?
-    self.errors[:password_confirmation] << "does not match password" if password != password_confirmation
-    password == password_confirmation && !password.blank?
-  end
-
   ##################################################
   # Private instance methods
   ##################################################
 
   private
 
-    ##
-    # Initializes the OAuth2 access token object for this user
-    def init_oauth_access_token
-      @oauth_access_token = OAuth2::AccessToken.new(
-        User.new_oauth_client,
-        read_attribute(:access_token),
-        {
-          :refresh_token => read_attribute(:refresh_token),
-          :expires_at => read_attribute(:access_token_expires_at)
-        }
-      )
-    end
+  ##
+  # Initializes the OAuth2 access token object for this user
+  def init_oauth_access_token
+    @oauth_access_token = OAuth2::AccessToken.new(
+      User.new_oauth_client,
+      read_attribute(:access_token),
+      {
+        :refresh_token => read_attribute(:refresh_token),
+        :expires_at => read_attribute(:access_token_expires_at)
+      }
+    )
+  end
 
   ##################################################
   # Class methods

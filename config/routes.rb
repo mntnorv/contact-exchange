@@ -15,12 +15,7 @@ Contacts::Application.routes.draw do
   # User page
   get  'u/:long_token' => 'contact#index', :as => :user_page
   post 'u/:long_token' => 'contact#add_contact'
-end
 
-# cancel_user_registration_path   GET   /users/cancel(.:format)   registrations#cancel
-# user_registration_path  POST  /users(.:format)  registrations#create
-# new_user_registration_path  GET   /users/sign_up(.:format)  registrations#new
-# edit_user_registration_path   GET   /users/edit(.:format)   registrations#edit
-#   PATCH   /users(.:format)  registrations#update
-#   PUT   /users(.:format)  registrations#update
-#   DELETE  /users(.:format)  registrations#destroy 
+  # Errors
+  get '404' => 'error#error_404', as: :error_404
+end

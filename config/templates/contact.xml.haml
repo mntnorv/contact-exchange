@@ -1,0 +1,13 @@
+!!! XML
+
+%atom:entry{ 'xmlns:atom' => 'http://www.w3.org/2005/Atom', 'xmlns:gContact' => 'http://schemas.google.com/contact/2008', 'xmlns:gd' => 'http://schemas.google.com/g/2005' }
+  %atom:category{ scheme: 'http://schemas.google.com/g/2005#kind', term: 'http://schemas.google.com/contact/2008#contact' }
+  
+  %gd:name
+    %gd:givenName= contact.first_name
+    %gd:familyName= contact.last_name
+
+  %gd:phoneNumber{ rel: 'http://schemas.google.com/g/2005#mobile', primary: 'true' }
+    = contact.phone
+
+  %gContact:groupMembershipInfo{ deleted: 'false', href: "http://www.google.com/m8/feeds/groups/#{user.email}/base/6" }
