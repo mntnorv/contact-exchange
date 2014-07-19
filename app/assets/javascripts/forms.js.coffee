@@ -1,4 +1,6 @@
 $ ->
+  ##
+  # Remote forms
   handleFormErrors = (form, errors) ->
     form.find('input').removeClass('validation-error validation-success')
 
@@ -20,3 +22,7 @@ $ ->
 
   remoteForms.on 'ajax:error', (evt, data) ->
     handleFormErrors($(@), data.responseJSON.errors)
+
+  ##
+  # Auto select on focus fields
+  $('input[data-selectonfocus]').selectOnFocus()

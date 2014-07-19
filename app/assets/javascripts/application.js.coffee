@@ -28,5 +28,9 @@ window.ParsleyConfig =
 
 $.fn.selectOnFocus = ->
   @.focus ->
-    @[0].selectionStart = 0
-    @[0].selectionEnd = @.val().length
+    @.select()
+
+  @.click (e) ->
+    e.preventDefault()
+    e.stopPropagation()
+    @.select()
