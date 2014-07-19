@@ -1,7 +1,0 @@
-= form_tag(user_page_url(@user.long_token), :method => 'post', 'data-validate' => 'parsley') do
-  .fieldset
-    = text_field_tag :first_name, nil, :placeholder => 'First name', :class => 'input-block-level field', 'data-required' => 'true', 'data-minlength' => '2'
-    = text_field_tag :last_name, nil, :placeholder => 'Last name', :class => 'input-block-level field', 'data-required' => 'true', 'data-minlength' => '2'
-    = text_field_tag :phone, nil, :placeholder => 'Phone number', :class => 'input-block-level field', 'data-required' => 'true', 'data-type' => 'phone'
-
-    = submit_tag "Add contact", :class => "btn btn-block btn-primary btn-large"

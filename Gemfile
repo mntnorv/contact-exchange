@@ -1,14 +1,11 @@
 source 'https://rubygems.org'
 
 # Use Ruby 2.0 with Rails 4.0
-ruby '2.0.0'
-gem 'rails', '4.0.0'
+ruby '2.1.2'
+gem 'rails', '4.1.0'
 
 # Rails addon for Heroku
 gem 'rails_12factor', group: :production
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
 
@@ -19,13 +16,13 @@ gem 'yettings'
 gem 'haml-rails'
 
 # Twitter Bootstrap in SASS
-gem 'bootstrap-sass', '~> 2.3.2.0'
+gem 'bootstrap-sass', '~> 3.2.0'
 
 # Javascript form validation
 gem 'parsley-rails'
 
 # User management
-gem 'devise', '~> 3.0.2'
+gem 'devise'
 
 # Authentication with Devise
 gem 'omniauth-google-oauth2'
@@ -35,9 +32,6 @@ gem 'omniauth-google-oauth2'
 group :assets do
   gem 'sass-rails',   '~> 4.0.0'
   gem 'coffee-rails', '~> 4.0.0'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 2.1.1'
 end

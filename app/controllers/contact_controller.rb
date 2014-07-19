@@ -1,5 +1,5 @@
-class UserPageController < ApplicationController
-  layout 'layouts/simple_form'
+class ContactController < ApplicationController
+  layout 'layouts/card'
 
   # GET /users/1
   def index
@@ -23,9 +23,9 @@ class UserPageController < ApplicationController
     )
 
     if response_status == 201
-      redirect_to user_page_url(user.long_token), notice: "Contact was successfully added."
+      head :no_content
     else
-      redirect_to user_page_url(user.long_token), alert: "Error: adding the contact failed."
+      render json: { error: 'Failed to add the contact' }, status: :internal_server_error
     end
   end
 end

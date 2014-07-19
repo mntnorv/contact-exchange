@@ -1,0 +1,10 @@
+!!!
+%html
+  = render 'layouts/head'
+  %body.card-background
+    .card
+      = render 'layouts/messages'
+      .card-body
+        = yield
+      .card-footer.text-center
+        = link_to "ContactExchange", root_path

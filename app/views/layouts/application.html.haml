@@ -2,11 +2,11 @@
 %html
   = render 'layouts/head'
   %body
+    = render 'layouts/navigation'
+    = render 'layouts/messages'
+
     .container-narrow
-      = render 'layouts/navigation'
-      .row-fluid
-        .span12= render 'layouts/messages'
-      .row-fluid
-        .span12= yield
+      .row
+        .col-md-12= yield
       %hr
-      .muted &copy; Mantas Norvaiša 2013
+      .muted &copy; Mantas Norvaiša 2013-2014

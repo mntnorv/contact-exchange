@@ -3,10 +3,10 @@ defaults: &defaults
   google_token_uri: https://accounts.google.com/o/oauth2/token
   google_client_id: 530414316933-b8al6ulsrtu2pmr9e2ortt75g7b0i1nl.apps.googleusercontent.com
   google_client_secret: AUNvj4uM6HiUm8x2BgVuGWXT
-  google_callback: http://localhost/oauth2callback
+  google_callback: http://contact-exchange:3000/users/auth/google_oauth2/callback 
   google_api_scopes:
-    - https://www.googleapis.com/auth/userinfo.profile
-    - https://www.googleapis.com/auth/userinfo.email
+    - profile
+    - email
     - http://www.google.com/m8/feeds/
 
 development:

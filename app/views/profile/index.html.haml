@@ -1,0 +1,24 @@
+.hrheader Your profile link
+.input-group
+  %input{:value => user_page_url(current_user.long_token), type: 'text', class: 'form-control', readonly: 'readonly'}
+  %span.input-group-btn
+    = link_to 'Go!', user_page_url(current_user.long_token), class: 'btn btn-primary', target: '_blank'
+
+- if current_user.encrypted_password.empty?
+  .hrheader Create a password
+- else
+  .hrheader Change your password
+
+= form_for(current_user, :url => registration_path(:user), :html => { :method => :put }) do |f|
+  - unless current_user.encrypted_password.empty?
+    .form-group
+      %div= f.password_field :current_password, placeholder: 'Old password', class: 'form-control'
+
+  .form-group
+    %div= f.password_field :password, placeholder: 'New password', class: 'form-control', autocomplete: 'off'
+
+  .form-group
+    %div= f.password_field :password_confirmation, class: 'form-control', placeholder: 'Confirm password'
+
+  .form-group
+    %div= f.submit 'Update', class: 'btn btn-primary'

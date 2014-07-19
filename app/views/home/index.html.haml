@@ -2,19 +2,19 @@
   %h1 Contact exchange
   %p.lead Give a URL, get a contact. It's that simple.
   - if !current_user
-    = link_to "Sign up with Google", omniauth_authorize_path(:user, :google_oauth2), :class => "btn btn-large btn-success"
+    = link_to 'Sign up with Google', omniauth_authorize_path(:user, :google_oauth2), :class => 'btn btn-lg btn-success'
   - else
-    = link_to "Go to your profile", account_path, :class => "btn btn-large btn-info"
+    = link_to 'Go to your profile', profile_path, :class => 'btn btn-lg btn-info'
 
 %hr
 
-.row-fluid
-  .span4
+.row
+  .col-md-4
     %h4 Simple
     %p Register, get a URL, give it to anyone who's contact you want. When they fill up the form, the new contact is instantly synced to your mobile device.
-  .span4
+  .col-md-4
     %h4 Seamless
     %p Seamlessly and instantly syncs contacts with all major mobile operating systems: <strong>iOS</strong>, <strong>Android</strong> and <strong>Windows Phone</strong>.
-  .span4
+  .col-md-4
     %h4 Secure
     %p Your URL contains a long hash that is almost impossible to guess, so only the people you trust will be able to add their contact.
