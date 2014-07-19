@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauth_providers => [:google_oauth2]
 
+  validates_confirmation_of :password
+
   # The user's OAuth client
   attr_accessor :oauth_access_token
 

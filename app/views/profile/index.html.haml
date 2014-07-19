@@ -9,7 +9,7 @@
 - else
   .hrheader Change your password
 
-= form_for(current_user, :url => registration_path(:user), :html => { :method => :put }) do |f|
+= form_for(current_user, :url => registration_path(:user), method: :put, remote: true) do |f|
   - unless current_user.encrypted_password.empty?
     .form-group
       %div= f.password_field :current_password, placeholder: 'Old password', class: 'form-control'

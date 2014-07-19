@@ -3,7 +3,7 @@ class RegistrationsController < Devise::RegistrationsController
     @user = User.find(current_user.id)
 
     successfully_updated = if needs_password?(@user, params)
-      @user.update_with_password(update)
+      @user.update_with_password(update_params)
     else
       # Remove the virtual current_password attribute, update_attributes
       # doesn't know how to ignore it
@@ -12,12 +12,12 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if successfully_updated
-      set_flash_message :notice, :updated
       # Sign in the user bypassing validation in case his password changed
       sign_in @user, :bypass => true
+      render json: { toast: { type: 'success', message: 'Updated successfully' } }
+    else
+      render json: { errors: @user.errors.messages }, status: :unprocessable_entity
     end
-
-    redirect_to profile_path
   end
 
   ##
