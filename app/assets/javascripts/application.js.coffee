@@ -16,6 +16,9 @@
 #= require parsley
 #= require bootstrap
 #= require toastr
+#= require spin
+#= require ladda
+#= require ladda.jquery
 #
 # Application
 #= require forms

@@ -21,4 +21,5 @@
     = f.password_field :password_confirmation, class: 'form-control', placeholder: 'Confirm password', 'data-parsley-required' => true, 'data-parsley-equalto' => '#user_password'
 
   .form-group
-    = f.submit 'Update', class: 'btn btn-primary'
+    %button{ type: :submit, class: 'btn btn-primary ladda-button', 'data-style' => 'zoom-out' }
+      %span.ladda-label Update

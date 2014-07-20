@@ -1,30 +1,47 @@
 $ ->
   ##
+  # Ladda buttons
+  $('.ladda-button').each ->
+    self = $(@)
+    ladda = self.ladda()
+    self.data('ladda', ladda)
+
+  ##
   # Remote forms
-  handleFormErrors = (form, errors) ->
-    form.find('input').removeClass('validation-error validation-success')
-
-    $.each errors, (name, messages) ->
-      input = form.find("input[name*='#{name}']")
-      input.addClass('validation-error')
-
-  handleResponse = (response) ->
-    toastr[response.toast.type](response.toast.message) if response.toast
-    location.reload(true) if response.reload
-
   remoteForms = $('form[data-remote]')
-
-  remoteForms.on 'ajax:success', (evt, data) ->
+  remoteForms.each ->
     form = $(@)
     inputs = form.find('input[type="text"],input[type="password"]')
-    handleFormErrors(form, {})
-    inputs.val('')
-    inputs.blur()
-    handleResponse(data)
+    submit = form.find('button[type="submit"]')
+    ladda = submit.ladda() if submit.hasClass('ladda-button')
 
-  remoteForms.on 'ajax:error', (evt, data) ->
-    handleResponse(data)
-    handleFormErrors($(@), data.responseJSON.errors)
+    handleFormErrors = (errors) ->
+      form.find('input').removeClass('validation-error validation-success')
+
+      $.each errors, (name, messages) ->
+        input = form.find("input[name*='#{name}']")
+        input.addClass('validation-error')
+
+    handleComplete = (response) ->
+      if response.reload
+        location.reload(true)
+        false
+      else
+        ladda.ladda('stop') if ladda
+        toastr[response.toast.type](response.toast.message) if response.toast
+        handleFormErrors(response.errors or {})
+        true
+
+    form.submit ->
+      ladda.ladda('start') if ladda
+
+    form.on 'ajax:success', (evt, data) ->
+      if handleComplete(data)
+        inputs.val('')
+        inputs.blur()
+
+    form.on 'ajax:error', (evt, data) ->
+      handleComplete(data.responseJSON)
 
   ##
   # Auto select on focus fields

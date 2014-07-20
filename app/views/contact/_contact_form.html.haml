@@ -9,4 +9,5 @@
     = text_field_tag :phone, nil, placeholder: 'Phone number', autocomplete: :off, class: 'form-control input-lg', 'data-parsley-required' => true, 'data-parsley-pattern' => '+?\d{6,}'
 
   .form-group
-    = submit_tag 'Add contact', class: 'btn btn-block btn-primary btn-lg'
+    %button{ type: :submit, class: 'btn btn-block btn-primary btn-lg ladda-button', 'data-style' => 'zoom-out' }
+      %span.ladda-label Add contact
