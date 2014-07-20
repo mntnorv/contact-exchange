@@ -10,4 +10,4 @@
   %gd:phoneNumber{ rel: 'http://schemas.google.com/g/2005#mobile', primary: 'true' }
     = contact.phone
 
-  %gContact:groupMembershipInfo{ deleted: 'false', href: "http://www.google.com/m8/feeds/groups/#{user.email}/base/6" }
+  %gContact:groupMembershipInfo{ deleted: 'false', href: "http://www.google.com/m8/feeds/groups/#{user.email}/base/#{user.group_id}" }

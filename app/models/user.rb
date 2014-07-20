@@ -5,9 +5,10 @@ class User < ActiveRecord::Base
 
   # The format string of a new Google contact entry
   TEMPLATES_DIR = File.join(Rails.root, 'config', 'templates')
+  GROUP_REGEX = /https:\/\/www.google.com\/m8\/feeds\/groups\/[a-z%\d\.\-]+\/full\/([a-f\d]+)/
 
-  # Initialize the OAuth client after ActiveRecord initialization
-  after_initialize :init_oauth_access_token
+  # Initialize the model after ActiveRecord initialization
+  after_initialize :init
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
@@ -57,12 +58,10 @@ class User < ActiveRecord::Base
     })
 
     haml_template = File.read(File.join(TEMPLATES_DIR, 'contact.xml.haml'))
-    request_body = Haml::Engine.new(haml_template).render(Object.new, {
+    request_body = Haml::Engine.new(haml_template, remove_whitespace: true).render(Object.new, {
       contact: contact,
       user: self
     })
-
-    p request_body
 
     @response = @oauth_access_token.post(
       'https://www.google.com/m8/feeds/contacts/default/full',
@@ -90,6 +89,14 @@ class User < ActiveRecord::Base
 
   private
 
+  def init
+    init_oauth_access_token
+
+    if new_record?
+      add_ce_group
+    end
+  end
+
   ##
   # Initializes the OAuth2 access token object for this user
   def init_oauth_access_token
@@ -101,6 +108,34 @@ class User < ActiveRecord::Base
         :expires_at => read_attribute(:access_token_expires_at)
       }
     )
+  end
+
+  ##
+  # Add a new contact group and save its id in the DB
+  def add_ce_group
+    self.refresh_access_token!
+
+    haml_template = File.read(File.join(TEMPLATES_DIR, 'group.xml.haml'))
+    request_body = Haml::Engine.new(haml_template, remove_whitespace: true).render(Object.new)
+
+    @response = @oauth_access_token.post(
+      'https://www.google.com/m8/feeds/groups/default/full',
+      {
+        body: request_body,
+        headers: {
+          'Content-type' => 'application/atom+xml',
+          'GData-Version' => '3.0'
+        }
+      }
+    )
+
+    group_id = GROUP_REGEX.match(@response.body)[1]
+
+    if group_id
+      self.group_id = group_id
+    end
+
+    @response.status == 201
   end
 
   ##################################################
