@@ -19,6 +19,7 @@
 #
 # Application
 #= require forms
+#= require toasts
 #
 
 window.ParsleyConfig =

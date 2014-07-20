@@ -12,4 +12,20 @@ class ApplicationController < ActionController::Base
   rescue_from 'ActionController::RoutingError' do |exception|
     redirect_to error_404_path
   end
+
+  def success_toast(message)
+    toast('success', message)
+  end
+
+  def error_toast(message)
+    toast('error', message)
+  end
+
+  def toast(type, message)
+    flash[:toasts] ||= []
+    flash[:toasts] << {
+      type: type,
+      message: message
+    }
+  end
 end

@@ -12,13 +12,13 @@
 = form_for(current_user, :url => registration_path(:user), method: :put, remote: true, html: {'data-parsley-validate' => true}) do |f|
   - unless current_user.encrypted_password.blank?
     .form-group
-      %div= f.password_field :current_password, placeholder: 'Old password', class: 'form-control', 'data-parsley-required' => true
+      = f.password_field :current_password, placeholder: 'Current password', class: 'form-control', 'data-parsley-required' => true
 
   .form-group
-    %div= f.password_field :password, placeholder: 'New password', class: 'form-control', autocomplete: 'off', 'data-parsley-required' => true, 'data-parsley-minlength' => 8
+    = f.password_field :password, placeholder: 'New password', class: 'form-control', autocomplete: 'off', 'data-parsley-required' => true, 'data-parsley-minlength' => 8
 
   .form-group
-    %div= f.password_field :password_confirmation, class: 'form-control', placeholder: 'Confirm password', 'data-parsley-required' => true, 'data-parsley-equalto' => '#user_password'
+    = f.password_field :password_confirmation, class: 'form-control', placeholder: 'Confirm password', 'data-parsley-required' => true, 'data-parsley-equalto' => '#user_password'
 
   .form-group
-    %div= f.submit 'Update', class: 'btn btn-primary'
+    = f.submit 'Update', class: 'btn btn-primary'

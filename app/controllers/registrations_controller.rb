@@ -1,6 +1,7 @@
 class RegistrationsController < Devise::RegistrationsController
   def update
     @user = User.find(current_user.id)
+    reload = false
 
     successfully_updated = if needs_password?(@user, params)
       @user.update_with_password(update_params)
@@ -9,12 +10,19 @@ class RegistrationsController < Devise::RegistrationsController
       # doesn't know how to ignore it
       params[:user].delete(:current_password)
       @user.update_attributes(update_params)
+      reload = true
     end
 
     if successfully_updated
       # Sign in the user bypassing validation in case his password changed
       sign_in @user, :bypass => true
-      render json: { toast: { type: 'success', message: 'Updated successfully' } }
+
+      if reload
+        success_toast('Updated successfully')
+        render json: { reload: true }
+      else
+        render json: { toast: { type: 'success', message: 'Updated successfully' } }
+      end
     else
       render json: { errors: @user.errors.messages }, status: :unprocessable_entity
     end
