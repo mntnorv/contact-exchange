@@ -78,39 +78,6 @@ class User < ActiveRecord::Base
   end
 
   ##
-  # Enables sign up without a password
-  def password_required?
-    false
-  end
-
-  ##################################################
-  # Private instance methods
-  ##################################################
-
-  private
-
-  def init
-    init_oauth_access_token
-
-    if new_record?
-      add_ce_group
-    end
-  end
-
-  ##
-  # Initializes the OAuth2 access token object for this user
-  def init_oauth_access_token
-    @oauth_access_token = OAuth2::AccessToken.new(
-      User.new_oauth_client,
-      read_attribute(:access_token),
-      {
-        :refresh_token => read_attribute(:refresh_token),
-        :expires_at => read_attribute(:access_token_expires_at)
-      }
-    )
-  end
-
-  ##
   # Add a new contact group and save its id in the DB
   def add_ce_group
     self.refresh_access_token!
@@ -132,10 +99,39 @@ class User < ActiveRecord::Base
     group_id = GROUP_REGEX.match(@response.body)[1]
 
     if group_id
-      self.group_id = group_id
+      self.update_attribute(:group_id, group_id)
     end
 
     @response.status == 201
+  end
+
+  ##
+  # Enables sign up without a password
+  def password_required?
+    false
+  end
+
+  ##################################################
+  # Private instance methods
+  ##################################################
+
+  private
+
+  def init
+    init_oauth_access_token
+  end
+
+  ##
+  # Initializes the OAuth2 access token object for this user
+  def init_oauth_access_token
+    @oauth_access_token = OAuth2::AccessToken.new(
+      User.new_oauth_client,
+      read_attribute(:access_token),
+      {
+        :refresh_token => read_attribute(:refresh_token),
+        :expires_at => read_attribute(:access_token_expires_at)
+      }
+    )
   end
 
   ##################################################
