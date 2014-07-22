@@ -27,6 +27,9 @@ gem 'devise'
 # Authentication with Devise
 gem 'omniauth-google-oauth2'
 
+# For XML parsing
+gem 'nokogiri'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
